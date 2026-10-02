@@ -25,17 +25,17 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-// 1. Get all medicines for logged in user
+// 1. Get all medicines for logged in user strictly
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    // Check karein token mein id hai ya _id ya userId
-    const currentUserId = req.user.id || req.user._id || req.user.userId;
+    const rawUserId = req.user.id || req.user._id || req.user.userId;
 
-    if (!currentUserId) {
+    if (!rawUserId) {
       return res.status(400).json({ message: 'User ID missing in token payload' });
     }
 
-    // Dono common schema field names check karta hai (user ya userId)
+    const currentUserId = rawUserId.toString();
+
     const medicines = await Medicine.find({
       $or: [
         { user: currentUserId },
@@ -52,19 +52,22 @@ router.get('/', authMiddleware, async (req, res) => {
 // 2. Add new medicine
 router.post('/add', authMiddleware, async (req, res) => {
   try {
-    const { name, dosage, time } = req.body;
-    const currentUserId = req.user.id || req.user._id || req.user.userId;
+    const { name, dosage, time, stock } = req.body;
+    const rawUserId = req.user.id || req.user._id || req.user.userId;
 
-    if (!currentUserId) {
+    if (!rawUserId) {
       return res.status(400).json({ message: 'User ID missing in token payload' });
     }
 
+    const currentUserId = rawUserId.toString();
+
     const newMed = new Medicine({
       user: currentUserId,
-      userId: currentUserId, // Dono save karega taaki model schema jo bhi use kare, match ho jaye
+      userId: currentUserId,
       name,
       dosage,
-      time
+      time,
+      stock: Number(stock) || 10
     });
 
     const savedMed = await newMed.save();
@@ -77,7 +80,13 @@ router.post('/add', authMiddleware, async (req, res) => {
 // 3. Delete medicine (Only logged-in user can delete their own medicine)
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    const currentUserId = req.user.id || req.user._id || req.user.userId;
+    const rawUserId = req.user.id || req.user._id || req.user.userId;
+
+    if (!rawUserId) {
+      return res.status(400).json({ message: 'User ID missing in token payload' });
+    }
+
+    const currentUserId = rawUserId.toString();
 
     const deletedMedicine = await Medicine.findOneAndDelete({
       _id: req.params.id,

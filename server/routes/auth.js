@@ -31,7 +31,32 @@ router.post('/register', async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully!' });
+
+    // Register hote hi token create karein taaki user direct login ho sake
+    const userIdString = newUser._id.toString();
+    const token = jwt.sign(
+      { 
+        id: userIdString, 
+        _id: userIdString, 
+        userId: userIdString, 
+        role: newUser.role,
+        email: newUser.email 
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(201).json({ 
+      message: 'User registered successfully!',
+      token,
+      user: {
+        id: userIdString,
+        _id: userIdString,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role
+      }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -56,8 +81,16 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
 
+    // Har sambhav key me string user id pass karein token me
+    const userIdString = user._id.toString();
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { 
+        id: userIdString, 
+        _id: userIdString, 
+        userId: userIdString, 
+        role: user.role,
+        email: user.email 
+      },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -66,7 +99,8 @@ router.post('/login', async (req, res) => {
       message: 'Login successful!',
       token,
       user: {
-        id: user._id,
+        id: userIdString,
+        _id: userIdString,
         name: user.name,
         email: user.email,
         role: user.role

@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
-const medicineSchema = new mongoose.Schema({
+const MedicineSchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
     required: true
+  },
+  userId: {
+    type: String
   },
   name: {
     type: String,
@@ -12,20 +14,16 @@ const medicineSchema = new mongoose.Schema({
   },
   dosage: {
     type: String,
-    required: true // e.g. "1 Tablet", "5ml"
+    required: true
   },
   time: {
     type: String,
-    required: true // e.g. "08:00 AM"
+    required: true
   },
-  taken: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  stock: {
+    type: Number,
+    default: 10
   }
-});
+}, { timestamps: true });
 
-module.exports = mongoose.model('Medicine', medicineSchema);
+module.exports = mongoose.model('Medicine', MedicineSchema);
