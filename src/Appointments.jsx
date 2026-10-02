@@ -28,7 +28,7 @@ export default function Appointments() {
   const fetchAppointments = async () => {
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:5000/api/appointments', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/appointments', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -52,7 +52,7 @@ export default function Appointments() {
 
     setAdding(true)
     try {
-      const res = await fetch('http://localhost:5000/api/appointments/add', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/appointments/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export default function Appointments() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/appointments/${id}`, {
+      const res = await fetch(`https://elder-care-reminder.onrender.com/api/appointments/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })

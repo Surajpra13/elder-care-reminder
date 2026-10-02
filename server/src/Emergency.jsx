@@ -19,7 +19,7 @@ export default function Emergency() {
   const fetchContacts = async () => {
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:5000/api/emergency', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/emergency', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -128,7 +128,7 @@ export default function Emergency() {
 
     setAdding(true)
     try {
-      const res = await fetch('http://localhost:5000/api/emergency/add', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/emergency/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ export default function Emergency() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/emergency/${id}`, {
+      const res = await fetch(`https://elder-care-reminder.onrender.com/api/emergency/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })

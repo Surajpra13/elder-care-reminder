@@ -28,7 +28,7 @@ export default function Medicines() {
   const fetchMedicines = async () => {
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:5000/api/medicines', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/medicines', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -71,7 +71,7 @@ export default function Medicines() {
 
     setAdding(true)
     try {
-      const res = await fetch('http://localhost:5000/api/medicines/add', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/medicines/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default function Medicines() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/medicines/${id}`, {
+      const res = await fetch(`https://elder-care-reminder.onrender.com/api/medicines/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })

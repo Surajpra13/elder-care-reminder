@@ -62,7 +62,7 @@ export default function HealthReport() {
   ])
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/medicines', {
+    fetch('https://elder-care-reminder.onrender.com/api/medicines', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())

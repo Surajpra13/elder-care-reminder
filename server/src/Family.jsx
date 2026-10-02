@@ -23,7 +23,7 @@ export default function Family() {
   const fetchMembers = async () => {
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:5000/api/family', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/family', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -51,7 +51,7 @@ export default function Family() {
 
     setAdding(true)
     try {
-      const res = await fetch('http://localhost:5000/api/family/add', {
+      const res = await fetch('https://elder-care-reminder.onrender.com/api/family/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export default function Family() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/family/${id}`, {
+      const res = await fetch(`https://elder-care-reminder.onrender.com/api/family/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })

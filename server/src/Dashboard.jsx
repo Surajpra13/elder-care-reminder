@@ -162,10 +162,10 @@ export default function Dashboard() {
       const headers = { 'Authorization': `Bearer ${token}` }
 
       const [medRes, appRes, contRes, famRes] = await Promise.all([
-        fetch('http://localhost:5000/api/medicines', { headers }),
-        fetch('http://localhost:5000/api/appointments', { headers }),
-        fetch('http://localhost:5000/api/emergency', { headers }),
-        fetch('http://localhost:5000/api/family', { headers })
+        fetch('https://elder-care-reminder.onrender.com/api/medicines', { headers }),
+        fetch('https://elder-care-reminder.onrender.com/api/appointments', { headers }),
+        fetch('https://elder-care-reminder.onrender.com/api/emergency', { headers }),
+        fetch('https://elder-care-reminder.onrender.com/api/family', { headers })
       ])
 
       if (medRes.ok) {
