@@ -13,7 +13,10 @@ export default function Medicines() {
   const [stock, setStock] = useState('15')
   const [adding, setAdding] = useState(false)
 
-  // Taken status state
+  // Current logged in user token
+  const token = localStorage.getItem('token')
+
+  // Taken status state (user-specific)
   const [takenMap, setTakenMap] = useState(() => {
     try {
       const saved = localStorage.getItem('user_taken_doses')
@@ -23,20 +26,45 @@ export default function Medicines() {
     }
   })
 
-  const token = localStorage.getItem('token')
+  // Backend Base URL: local agar localhost ho, warna live Render
+  const BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api/medicines'
+    : 'https://elder-care-reminder.onrender.com/api/medicines'
 
   const fetchMedicines = async () => {
+    if (!token) {
+      setMedicines([])
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     try {
-      const res = await fetch('https://elder-care-reminder.onrender.com/api/medicines', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const res = await fetch(BASE_URL, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
       if (res.ok) {
         const data = await res.json()
-        setMedicines(data)
+        setMedicines(Array.isArray(data) ? data : [])
+      } else {
+        setMedicines([])
       }
     } catch (err) {
-      console.error('Fetch error:', err)
+      // Agar local 5000 fail ho toh live render try karega
+      try {
+        const resLive = await fetch('https://elder-care-reminder.onrender.com/api/medicines', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        if (resLive.ok) {
+          const liveData = await resLive.json()
+          setMedicines(Array.isArray(liveData) ? liveData : [])
+        }
+      } catch (e) {
+        console.error('Fetch error:', e)
+        setMedicines([])
+      }
     } finally {
       setLoading(false)
     }
@@ -44,7 +72,7 @@ export default function Medicines() {
 
   useEffect(() => {
     fetchMedicines()
-  }, [])
+  }, [token])
 
   // Audio reminder sound
   const playAlarmSound = () => {
@@ -67,11 +95,11 @@ export default function Medicines() {
 
   const handleAddMedicine = async (e) => {
     e.preventDefault()
-    if (!name || !dosage || !time) return
+    if (!name || !dosage || !time || !token) return
 
     setAdding(true)
     try {
-      const res = await fetch('https://elder-care-reminder.onrender.com/api/medicines/add', {
+      const res = await fetch(`${BASE_URL}/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,13 +127,14 @@ export default function Medicines() {
   }
 
   const handleDelete = async (id) => {
+    if (!token) return
     try {
-      const res = await fetch(`https://elder-care-reminder.onrender.com/api/medicines/${id}`, {
+      const res = await fetch(`${BASE_URL}/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
-        setMedicines(medicines.filter((m) => m._id !== id))
+        setMedicines((prev) => prev.filter((m) => m._id !== id))
       }
     } catch (err) {
       console.error('Delete failed:', err)
