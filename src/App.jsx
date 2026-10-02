@@ -96,100 +96,77 @@ function CareAssistant({ isFullScreen = false, onClose }) {
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: isFullScreen ? 'calc(100vh - 120px)' : '520px',
-      maxHeight: isFullScreen ? '820px' : '520px',
-      maxWidth: isFullScreen ? '900px' : '380px',
-      width: '100%',
-      margin: isFullScreen ? '20px auto' : '0',
-      background: '#ffffff',
-      borderRadius: '20px',
-      boxShadow: isFullScreen ? '0 10px 30px rgba(0,0,0,0.1)' : '0 20px 50px rgba(0,0,0,0.25)',
-      border: '1px solid #e2e8f0',
-      overflow: 'hidden'
-    }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
-        color: '#ffffff',
-        padding: '16px 20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem' }}>
+    <div 
+      className={`flex flex-col bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden w-full ${
+        isFullScreen 
+          ? 'max-w-4xl mx-auto my-4 h-[calc(100vh-140px)]' 
+          : 'max-w-[95vw] sm:max-w-[380px] h-[500px]'
+      }`}
+    >
+      {/* Bot Header */}
+      <div className="bg-gradient-to-r from-blue-900 to-blue-600 text-white p-4 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl">
             🤖
           </div>
           <div>
-            <strong style={{ fontSize: '1.05rem', display: 'block' }}>Care Saathi AI</strong>
-            <span style={{ fontSize: '0.72rem', opacity: 0.9 }}>Bol kar ya likh kar sawal poochiye</span>
+            <strong className="text-base block">Care Saathi AI</strong>
+            <span className="text-xs text-blue-100">Bol kar ya likh kar sawal poochiye</span>
           </div>
         </div>
 
         {!isFullScreen && onClose && (
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.4rem', cursor: 'pointer' }}>
+          <button 
+            onClick={onClose} 
+            className="text-white hover:text-red-200 text-2xl p-1 leading-none"
+          >
             ✕
           </button>
         )}
       </div>
 
-      <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', background: '#f8fafc' }}>
+      {/* Messages Scroll Area */}
+      <div className="flex-1 p-4 overflow-y-auto flex flex-col gap-3 bg-slate-50">
         {chatMessages.map((msg, i) => (
-          <div key={i} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', maxWidth: '82%' }}>
-            <div style={{
-              padding: '12px 16px',
-              borderRadius: msg.sender === 'user' ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
-              background: msg.sender === 'user' ? '#2563eb' : '#ffffff',
-              color: msg.sender === 'user' ? '#ffffff' : '#0f172a',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-              border: msg.sender === 'user' ? 'none' : '1px solid #e2e8f0',
-              fontSize: '0.9rem',
-              lineHeight: '1.5'
-            }}>
+          <div key={i} className={`max-w-[85%] ${msg.sender === 'user' ? 'self-end' : 'self-start'}`}>
+            <div className={`p-3 rounded-2xl text-sm leading-relaxed shadow-sm ${
+              msg.sender === 'user' 
+                ? 'bg-blue-600 text-white rounded-br-sm' 
+                : 'bg-white text-slate-900 border border-slate-200 rounded-bl-sm'
+            }`}>
               {msg.text}
             </div>
-            <div style={{ fontSize: '0.68rem', color: '#94a3b8', marginTop: '3px', textAlign: msg.sender === 'user' ? 'right' : 'left' }}>
+            <div className={`text-[10px] text-slate-400 mt-1 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
               {msg.time}
             </div>
           </div>
         ))}
       </div>
 
-      <div style={{ padding: '8px 14px', background: '#ffffff', borderTop: '1px solid #f1f5f9', display: 'flex', gap: '8px', overflowX: 'auto' }}>
-        <button onClick={() => handleSendMessage('Meri agli dawai kab hai?')} style={chipStyle}>💊 Agli Dawai?</button>
-        <button onClick={() => handleSendMessage('Maine BP ki dawai le li')} style={chipStyle}>✓ Dawai le li</button>
-        <button onClick={() => handleSendMessage('Doctor checkup kab hai?')} style={chipStyle}>🩺 Doctor Visit?</button>
-        <button onClick={() => handleSendMessage('Dawai ka stock kitna bacha hai?')} style={chipStyle}>📦 Stock Refill?</button>
+      {/* Quick Action Chips */}
+      <div className="p-2 bg-white border-t border-slate-100 flex gap-2 overflow-x-auto no-scrollbar">
+        <button onClick={() => handleSendMessage('Meri agli dawai kab hai?')} className="whitespace-nowrap px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-semibold text-slate-700 hover:bg-slate-200">💊 Agli Dawai?</button>
+        <button onClick={() => handleSendMessage('Maine BP ki dawai le li')} className="whitespace-nowrap px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-semibold text-slate-700 hover:bg-slate-200">✓ Dawai le li</button>
+        <button onClick={() => handleSendMessage('Doctor checkup kab hai?')} className="whitespace-nowrap px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-semibold text-slate-700 hover:bg-slate-200">🩺 Doctor Visit?</button>
+        <button onClick={() => handleSendMessage('Dawai ka stock kitna bacha hai?')} className="whitespace-nowrap px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-semibold text-slate-700 hover:bg-slate-200">📦 Stock Refill?</button>
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); handleSendMessage() }} style={{ padding: '12px 16px', background: '#ffffff', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '10px', alignItems: 'center' }}>
+      {/* Input Bar */}
+      <form onSubmit={(e) => { e.preventDefault(); handleSendMessage() }} className="p-3 bg-white border-t border-slate-200 flex gap-2 items-center">
         <input
           type="text"
-          placeholder="Yahan likhein ya mic daba kar bolein..."
+          placeholder="Likh kar ya mic daba kar bolein..."
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          style={{ flex: 1, padding: '12px 16px', borderRadius: '24px', border: '1px solid #cbd5e1', fontSize: '0.9rem', outline: 'none' }}
+          className="flex-1 px-4 py-2.5 rounded-full border border-slate-300 text-sm focus:outline-none focus:border-blue-500"
         />
         
         <button
           type="button"
           onClick={handleVoiceListen}
-          style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            background: isVoiceActive ? '#ef4444' : '#e0f2fe',
-            color: isVoiceActive ? '#fff' : '#0284c7',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.2rem',
-            cursor: 'pointer',
-            boxShadow: isVoiceActive ? '0 0 14px #ef4444' : 'none'
-          }}
+          className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all ${
+            isVoiceActive ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/50' : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+          }`}
           title="Mic: Bol kar poochiye"
         >
           🎤
@@ -197,7 +174,7 @@ function CareAssistant({ isFullScreen = false, onClose }) {
 
         <button
           type="submit"
-          style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#2563eb', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', cursor: 'pointer' }}
+          className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold hover:bg-blue-700"
         >
           ➔
         </button>
@@ -206,31 +183,19 @@ function CareAssistant({ isFullScreen = false, onClose }) {
   )
 }
 
-const chipStyle = {
-  background: '#f8fafc',
-  border: '1px solid #e2e8f0',
-  color: '#334155',
-  padding: '6px 12px',
-  borderRadius: '16px',
-  fontSize: '0.78rem',
-  fontWeight: '600',
-  whiteSpace: 'nowrap',
-  cursor: 'pointer'
-}
-
 // ==========================================
 // 🚀 MAIN APPLICATION ROUTER
 // ==========================================
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname)
   const [isFloatingOpen, setIsFloatingOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const token = localStorage.getItem('token')
   const isAdminAuth = sessionStorage.getItem('admin_session_auth') === 'true'
 
   // 👁️ Accessibility States
-  const [fontSizeLevel, setFontSizeLevel] = useState(1) // 0: Normal (14px), 1: Standard (16px), 2: Extra Large (19px)
+  const [fontSizeLevel, setFontSizeLevel] = useState(1) // 0: 14px, 1: 16px, 2: 19px
   const [highContrast, setHighContrast] = useState(false)
-
   const fontSizes = ['14px', '16px', '19px']
 
   useEffect(() => {
@@ -242,6 +207,7 @@ export default function App() {
   }, [])
 
   const navigateTo = (path) => {
+    setMobileMenuOpen(false)
     window.location.pathname = path
   }
 
@@ -263,50 +229,28 @@ export default function App() {
     if (currentPath === '/family') return <Family />
     if (currentPath === '/emergency') return <Emergency />
     if (currentPath === '/reports') return <HealthReport />
-    if (currentPath === '/assistant') return <CareAssistant isFullScreen={true} />
+    if (currentPath === '/assistant') return <div className="p-4"><CareAssistant isFullScreen={true} /></div>
     if (currentPath === '/dashboard') return <Dashboard />
 
+    // Landing / Default Home View
     return (
-      <div style={{
-        minHeight: '80vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '24px',
-        textAlign: 'center'
-      }}>
-        <div style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '16px',
-          maxWidth: '580px',
-          width: '100%',
-          padding: '48px 32px'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '12px' }}>❤️</div>
-          <h1 style={{ fontSize: '2.3rem', fontWeight: '800', marginBottom: '14px', color: highContrast ? '#facc15' : '#ffffff' }}>
+      <div className="min-h-[75vh] flex flex-col justify-center items-center px-4 py-8 text-center">
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl max-w-xl w-full p-6 sm:p-10 shadow-xl">
+          <div className="text-4xl sm:text-5xl mb-3">❤️</div>
+          <h1 className={`text-2xl sm:text-4xl font-extrabold mb-3 ${highContrast ? 'text-yellow-400' : 'text-white'}`}>
             ElderCare Health Hub
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '36px' }}>
+          <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-8">
             A dedicated companion for timely medicine alerts, doctor checkups, and keeping family members effortlessly updated.
           </p>
 
-          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             {token ? (
               <button 
                 onClick={() => navigateTo('/dashboard')}
-                style={{
-                  background: highContrast ? '#facc15' : '#2563eb',
-                  color: highContrast ? '#000000' : '#ffffff',
-                  border: 'none',
-                  padding: '12px 28px',
-                  borderRadius: '24px',
-                  fontWeight: '700',
-                  fontSize: '1rem',
-                  cursor: 'pointer'
-                }}
+                className={`w-full sm:w-auto px-6 py-3 rounded-full font-bold text-sm sm:text-base transition-colors ${
+                  highContrast ? 'bg-yellow-400 text-black' : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
               >
                 Go to Dashboard ➔
               </button>
@@ -314,29 +258,13 @@ export default function App() {
               <>
                 <button 
                   onClick={() => navigateTo('/login')}
-                  style={{
-                    background: '#2563eb',
-                    color: '#ffffff',
-                    border: 'none',
-                    padding: '12px 26px',
-                    borderRadius: '24px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
+                  className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold text-sm"
                 >
                   Patient Sign In
                 </button>
                 <button 
                   onClick={() => navigateTo('/register')}
-                  style={{
-                    background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#ffffff',
-                    padding: '12px 24px',
-                    borderRadius: '24px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
+                  className="w-full sm:w-auto px-6 py-2.5 bg-transparent border border-white/20 text-white rounded-full font-semibold text-sm hover:bg-white/10"
                 >
                   Create Account
                 </button>
@@ -345,17 +273,9 @@ export default function App() {
 
             <button 
               onClick={() => navigateTo('/admin-login')}
-              style={{
-                background: 'rgba(56, 189, 248, 0.12)',
-                border: '1px solid #38bdf8',
-                color: '#38bdf8',
-                padding: '12px 24px',
-                borderRadius: '24px',
-                fontWeight: '700',
-                cursor: 'pointer'
-              }}
+              className="w-full sm:w-auto px-6 py-2.5 bg-sky-400/10 border border-sky-400 text-sky-400 rounded-full font-bold text-sm hover:bg-sky-400/20"
             >
-              🛡️ Admin Terminal Login
+              🛡️ Admin Terminal
             </button>
           </div>
         </div>
@@ -373,139 +293,130 @@ export default function App() {
   const isAuthRoute = currentPath === '/login' || currentPath === '/register'
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: highContrast ? '#000000' : '#020617',
-      color: highContrast ? '#facc15' : '#f8fafc',
-      fontSize: fontSizes[fontSizeLevel],
-      position: 'relative',
-      transition: 'background 0.2s ease, font-size 0.15s ease'
-    }}>
+    <div 
+      style={{ fontSize: fontSizes[fontSizeLevel] }}
+      className={`min-h-screen transition-colors duration-200 ${
+        highContrast ? 'bg-black text-yellow-400' : 'bg-slate-950 text-slate-100'
+      }`}
+    >
       
       {/* 👓 SENIOR CITIZEN ACCESSIBILITY BAR */}
       {!hideUserNavbar && (
-        <div style={{
-          background: highContrast ? '#111827' : '#090d16',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          padding: '6px 28px',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          gap: '12px',
-          fontSize: '0.8rem'
-        }}>
-          <span style={{ color: '#94a3b8' }}>Accessibility Mode:</span>
+        <div className={`px-4 sm:px-8 py-2 flex flex-wrap justify-between sm:justify-end items-center gap-3 border-b text-xs ${
+          highContrast ? 'bg-slate-900 border-yellow-400/20' : 'bg-slate-900/80 border-white/10'
+        }`}>
+          <span className="text-slate-400">Accessibility:</span>
           
-          <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '6px', padding: '2px' }}>
-            <button onClick={() => setFontSizeLevel(0)} style={{ ...accBtnStyle, fontWeight: fontSizeLevel === 0 ? '800' : '400', background: fontSizeLevel === 0 ? '#2563eb' : 'transparent' }}>A-</button>
-            <button onClick={() => setFontSizeLevel(1)} style={{ ...accBtnStyle, fontWeight: fontSizeLevel === 1 ? '800' : '400', background: fontSizeLevel === 1 ? '#2563eb' : 'transparent' }}>A</button>
-            <button onClick={() => setFontSizeLevel(2)} style={{ ...accBtnStyle, fontWeight: fontSizeLevel === 2 ? '800' : '400', background: fontSizeLevel === 2 ? '#2563eb' : 'transparent' }}>A+</button>
-          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1 bg-white/10 rounded p-0.5">
+              <button onClick={() => setFontSizeLevel(0)} className={`px-2 py-0.5 rounded text-white ${fontSizeLevel === 0 ? 'bg-blue-600 font-bold' : ''}`}>A-</button>
+              <button onClick={() => setFontSizeLevel(1)} className={`px-2 py-0.5 rounded text-white ${fontSizeLevel === 1 ? 'bg-blue-600 font-bold' : ''}`}>A</button>
+              <button onClick={() => setFontSizeLevel(2)} className={`px-2 py-0.5 rounded text-white ${fontSizeLevel === 2 ? 'bg-blue-600 font-bold' : ''}`}>A+</button>
+            </div>
 
-          <button
-            onClick={() => setHighContrast(!highContrast)}
-            style={{
-              background: highContrast ? '#facc15' : 'rgba(255,255,255,0.1)',
-              color: highContrast ? '#000000' : '#ffffff',
-              border: 'none',
-              padding: '4px 10px',
-              borderRadius: '6px',
-              fontWeight: '700',
-              cursor: 'pointer'
-            }}
-          >
-            {highContrast ? '☀️ Normal Contrast' : '🌗 High Contrast'}
-          </button>
+            <button
+              onClick={() => setHighContrast(!highContrast)}
+              className={`px-2.5 py-1 rounded font-bold text-xs ${
+                highContrast ? 'bg-yellow-400 text-black' : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              {highContrast ? '☀️ Normal' : '🌗 High Contrast'}
+            </button>
+          </div>
         </div>
       )}
 
       {/* Main Navbar */}
       {!hideUserNavbar && token && (
-        <header style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '14px 28px',
-          background: highContrast ? '#030712' : '#0f172a',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          color: '#ffffff'
-        }}>
+        <header className={`sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex justify-between items-center border-b ${
+          highContrast ? 'bg-black border-yellow-400/20' : 'bg-slate-900/95 backdrop-blur border-white/10'
+        }`}>
+          {/* Logo */}
           <div 
             onClick={() => navigateTo('/')}
-            style={{ fontWeight: '700', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+            className="font-bold text-lg sm:text-xl cursor-pointer flex items-center gap-2 select-none"
           >
             <span>❤️</span> ElderCare
           </div>
 
-          <nav style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button onClick={() => navigateTo('/')} style={navBtnStyle}>🏠 Home</button>
-            <button onClick={() => navigateTo('/dashboard')} style={navBtnStyle}>Dashboard</button>
-            <button onClick={() => navigateTo('/medicines')} style={navBtnStyle}>💊 Medicines</button>
-            <button onClick={() => navigateTo('/appointments')} style={navBtnStyle}>🩺 Appointments</button>
-            <button onClick={() => navigateTo('/family')} style={navBtnStyle}>👨‍👩‍‍👧 Family</button>
-            <button onClick={() => navigateTo('/reports')} style={navBtnStyle}>📋 Reports</button>
-            <button onClick={() => navigateTo('/emergency')} style={navBtnStyle}>🚨 Emergency</button>
+          {/* Desktop Navigation Links */}
+          <nav className="hidden lg:flex gap-5 items-center">
+            <button onClick={() => navigateTo('/')} className="text-slate-300 hover:text-white font-medium text-sm">🏠 Home</button>
+            <button onClick={() => navigateTo('/dashboard')} className="text-slate-300 hover:text-white font-medium text-sm">Dashboard</button>
+            <button onClick={() => navigateTo('/medicines')} className="text-slate-300 hover:text-white font-medium text-sm">💊 Medicines</button>
+            <button onClick={() => navigateTo('/appointments')} className="text-slate-300 hover:text-white font-medium text-sm">🩺 Appointments</button>
+            <button onClick={() => navigateTo('/family')} className="text-slate-300 hover:text-white font-medium text-sm">👨‍👩‍👧 Family</button>
+            <button onClick={() => navigateTo('/reports')} className="text-slate-300 hover:text-white font-medium text-sm">📋 Reports</button>
+            <button onClick={() => navigateTo('/emergency')} className="text-slate-300 hover:text-white font-medium text-sm">🚨 Emergency</button>
 
             <button 
               onClick={() => navigateTo('/assistant')} 
-              style={{ ...navBtnStyle, color: '#38bdf8', fontWeight: '800' }}
+              className="text-sky-400 hover:text-sky-300 font-bold text-sm flex items-center gap-1"
             >
               🤖 Care Saathi
             </button>
 
             <button 
               onClick={handleLogout}
-              style={{
-                background: '#dc2626',
-                color: '#fff',
-                border: 'none',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                marginLeft: '6px'
-              }}
+              className="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg ml-2"
             >
               Logout
             </button>
           </nav>
+
+          {/* Mobile Hamburger Button */}
+          <div className="lg:hidden flex items-center gap-2">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg bg-white/10 text-white text-xl leading-none"
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
         </header>
       )}
 
-      <main>
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && !hideUserNavbar && token && (
+        <div className="lg:hidden bg-slate-900 border-b border-white/10 px-4 py-4 flex flex-col gap-2 shadow-2xl">
+          <button onClick={() => navigateTo('/')} className="text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium">🏠 Home</button>
+          <button onClick={() => navigateTo('/dashboard')} className="text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium">Dashboard</button>
+          <button onClick={() => navigateTo('/medicines')} className="text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium">💊 Medicines</button>
+          <button onClick={() => navigateTo('/appointments')} className="text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium">🩺 Appointments</button>
+          <button onClick={() => navigateTo('/family')} className="text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium">👨‍👩‍👧 Family</button>
+          <button onClick={() => navigateTo('/reports')} className="text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium">📋 Reports</button>
+          <button onClick={() => navigateTo('/emergency')} className="text-left px-3 py-2 rounded-lg hover:bg-white/10 text-sm font-medium">🚨 Emergency</button>
+          <button onClick={() => navigateTo('/assistant')} className="text-left px-3 py-2 rounded-lg bg-sky-500/20 text-sky-400 font-bold text-sm">🤖 Care Saathi AI</button>
+          <button onClick={handleLogout} className="text-left px-3 py-2 rounded-lg bg-red-600/20 text-red-400 font-semibold text-sm mt-2">Logout</button>
+        </div>
+      )}
+
+      {/* Main Body Content Container */}
+      <main className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
         {renderPage()}
       </main>
 
+      {/* Floating Care Saathi Bot */}
       {!isAdminRoute && !isAuthRoute && token && currentPath !== '/assistant' && (
         <>
           {!isFloatingOpen ? (
             <button
               onClick={() => setIsFloatingOpen(true)}
-              style={{
-                position: 'fixed',
-                bottom: '24px',
-                right: '24px',
-                background: highContrast ? '#facc15' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                color: highContrast ? '#000000' : '#ffffff',
-                border: 'none',
-                borderRadius: '50px',
-                padding: '12px 22px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.4)',
-                cursor: 'pointer',
-                zIndex: 999
-              }}
+              className={`fixed bottom-5 right-5 sm:bottom-6 sm:right-6 rounded-full px-4 sm:px-5 py-2.5 sm:py-3 flex items-center gap-2.5 shadow-2xl z-50 transition-transform active:scale-95 ${
+                highContrast 
+                  ? 'bg-yellow-400 text-black' 
+                  : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+              }`}
             >
-              <span style={{ fontSize: '1.4rem' }}>🤖</span>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.88rem', fontWeight: '800', lineHeight: '1.1' }}>Care Saathi</div>
-                <div style={{ fontSize: '0.7rem', opacity: highContrast ? 1 : 0.9 }}>Bol kar poochiye</div>
+              <span className="text-xl sm:text-2xl">🤖</span>
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-extrabold leading-tight">Care Saathi</div>
+                <div className="text-[10px] opacity-90 hidden sm:block">Bol kar poochiye</div>
               </div>
             </button>
           ) : (
-            <div style={{ position: 'fixed', bottom: '24px', right: '20px', zIndex: 9999 }}>
+            <div className="fixed bottom-4 right-2 sm:bottom-6 sm:right-6 z-[9999] max-w-[95vw]">
               <CareAssistant isFullScreen={false} onClose={() => setIsFloatingOpen(false)} />
             </div>
           )}
@@ -514,22 +425,4 @@ export default function App() {
 
     </div>
   )
-}
-
-const navBtnStyle = {
-  background: 'transparent',
-  border: 'none',
-  color: '#cbd5e1',
-  cursor: 'pointer',
-  fontSize: '0.95rem',
-  fontWeight: '500'
-}
-
-const accBtnStyle = {
-  border: 'none',
-  color: '#ffffff',
-  padding: '4px 8px',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  fontSize: '0.75rem'
 }
