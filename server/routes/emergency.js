@@ -6,7 +6,11 @@ const Emergency = require('../models/Emergency');
 const JWT_SECRET = process.env.JWT_SECRET || 'eldercare_super_secret_key_123';
 
 const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ')
+    ? authHeader.split(' ')[1]
+    : authHeader;
+
   if (!token) return res.status(401).json({ message: 'No token, unauthorized' });
 
   try {
@@ -14,14 +18,26 @@ const authMiddleware = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Token invalid' });
+    res.status(401).json({ message: 'Token invalid or expired' });
   }
 };
 
-// 1. Get all emergency contacts
+// 1. Get all emergency contacts for logged-in user only
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const contacts = await Emergency.find({ user: req.user.id }).sort({ createdAt: -1 });
+    const currentUserId = req.user.id || req.user._id || req.user.userId;
+
+    if (!currentUserId) {
+      return res.status(400).json({ message: 'User ID missing in token' });
+    }
+
+    const contacts = await Emergency.find({
+      $or: [
+        { user: currentUserId },
+        { userId: currentUserId }
+      ]
+    }).sort({ createdAt: -1 });
+
     res.json(contacts);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -31,13 +47,21 @@ router.get('/', authMiddleware, async (req, res) => {
 // 2. Add emergency contact
 router.post('/add', authMiddleware, async (req, res) => {
   try {
+    const currentUserId = req.user.id || req.user._id || req.user.userId;
+
+    if (!currentUserId) {
+      return res.status(400).json({ message: 'User ID missing in token' });
+    }
+
     const { name, relation, phone } = req.body;
     const newContact = new Emergency({
-      user: req.user.id,
+      user: currentUserId,
+      userId: currentUserId,
       name,
       relation,
       phone
     });
+
     const saved = await newContact.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -45,11 +69,24 @@ router.post('/add', authMiddleware, async (req, res) => {
   }
 });
 
-// 3. Delete emergency contact
+// 3. Delete emergency contact (only logged-in user can delete their own contact)
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    await Emergency.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Contact deleted' });
+    const currentUserId = req.user.id || req.user._id || req.user.userId;
+
+    const deleted = await Emergency.findOneAndDelete({
+      _id: req.params.id,
+      $or: [
+        { user: currentUserId },
+        { userId: currentUserId }
+      ]
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Contact not found or unauthorized' });
+    }
+
+    res.json({ message: 'Contact deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

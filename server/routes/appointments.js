@@ -6,7 +6,11 @@ const Appointment = require('../models/Appointment');
 const JWT_SECRET = process.env.JWT_SECRET || 'eldercare_super_secret_key_123';
 
 const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ')
+    ? authHeader.split(' ')[1]
+    : authHeader;
+
   if (!token) return res.status(401).json({ message: 'No token, unauthorized' });
 
   try {
@@ -14,14 +18,26 @@ const authMiddleware = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Token invalid' });
+    res.status(401).json({ message: 'Token invalid or expired' });
   }
 };
 
-// 1. Get all appointments for user
+// 1. Get all appointments for logged in user only
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const items = await Appointment.find({ user: req.user.id }).sort({ date: 1 });
+    const currentUserId = req.user.id || req.user._id || req.user.userId;
+
+    if (!currentUserId) {
+      return res.status(400).json({ message: 'User ID missing in token' });
+    }
+
+    const items = await Appointment.find({
+      $or: [
+        { user: currentUserId },
+        { userId: currentUserId }
+      ]
+    }).sort({ date: 1 });
+
     res.json(items);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -31,14 +47,22 @@ router.get('/', authMiddleware, async (req, res) => {
 // 2. Add appointment
 router.post('/add', authMiddleware, async (req, res) => {
   try {
+    const currentUserId = req.user.id || req.user._id || req.user.userId;
+
+    if (!currentUserId) {
+      return res.status(400).json({ message: 'User ID missing in token' });
+    }
+
     const { doctorName, hospital, date, time } = req.body;
     const newAppointment = new Appointment({
-      user: req.user.id,
+      user: currentUserId,
+      userId: currentUserId,
       doctorName,
       hospital,
       date,
       time
     });
+
     const saved = await newAppointment.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -46,11 +70,24 @@ router.post('/add', authMiddleware, async (req, res) => {
   }
 });
 
-// 3. Delete appointment
+// 3. Delete appointment (only logged in user can delete their own appointment)
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    await Appointment.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Appointment deleted' });
+    const currentUserId = req.user.id || req.user._id || req.user.userId;
+
+    const deleted = await Appointment.findOneAndDelete({
+      _id: req.params.id,
+      $or: [
+        { user: currentUserId },
+        { userId: currentUserId }
+      ]
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Appointment not found or unauthorized' });
+    }
+
+    res.json({ message: 'Appointment deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
