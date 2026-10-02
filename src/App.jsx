@@ -11,37 +11,6 @@ import AdminLogin from './AdminLogin'
 import AdminDashboard from './AdminDashboard'
 
 // ==========================================
-// 🏥 MODERN HEALTHCARE LOGO COMPONENT
-// ==========================================
-function MedicalLogo({ size = "small" }) {
-  if (size === "large") {
-    return (
-      <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-blue-600 to-teal-400 p-0.5 shadow-lg shadow-blue-500/30 flex items-center justify-center">
-        <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
-          <svg className="w-9 h-9 sm:w-11 sm:h-11 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-            <path d="M12 7v6" />
-            <path d="M9 10h6" />
-          </svg>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-teal-400 p-0.5 flex items-center justify-center shadow-md shadow-blue-500/20">
-      <div className="w-full h-full bg-slate-950 rounded-[6px] flex items-center justify-center">
-        <svg className="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          <path d="M12 7v6" />
-          <path d="M9 10h6" />
-        </svg>
-      </div>
-    </div>
-  )
-}
-
-// ==========================================
 // 🤖 EMBEDDED SMART CARE ASSISTANT COMPONENT
 // ==========================================
 function CareAssistant({ isFullScreen = false, onClose }) {
@@ -267,10 +236,8 @@ export default function App() {
     return (
       <div className="min-h-[75vh] flex flex-col justify-center items-center px-4 py-8 text-center">
         <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl max-w-xl w-full p-6 sm:p-10 shadow-xl">
-          {/* New Clean Medical Cross/Heart Logo */}
-          <MedicalLogo size="large" />
-
-          <h1 className={`text-2xl sm:text-4xl font-extrabold mb-3 tracking-tight ${highContrast ? 'text-yellow-400' : 'text-white'}`}>
+          <div className="text-4xl sm:text-5xl mb-3">❤️</div>
+          <h1 className={`text-2xl sm:text-4xl font-extrabold mb-3 ${highContrast ? 'text-yellow-400' : 'text-white'}`}>
             ElderCare Health Hub
           </h1>
           <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-8">
@@ -282,7 +249,7 @@ export default function App() {
               <button 
                 onClick={() => navigateTo('/dashboard')}
                 className={`w-full sm:w-auto px-6 py-3 rounded-full font-bold text-sm sm:text-base transition-colors ${
-                  highContrast ? 'bg-yellow-400 text-black' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/30'
+                  highContrast ? 'bg-yellow-400 text-black' : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
                 Go to Dashboard ➔
@@ -291,7 +258,7 @@ export default function App() {
               <>
                 <button 
                   onClick={() => navigateTo('/login')}
-                  className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold text-sm shadow-md shadow-blue-600/30"
+                  className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold text-sm"
                 >
                   Patient Sign In
                 </button>
@@ -306,7 +273,7 @@ export default function App() {
 
             <button 
               onClick={() => navigateTo('/admin-login')}
-              className="w-full sm:w-auto px-6 py-2.5 bg-sky-400/10 border border-sky-400/40 text-sky-400 rounded-full font-bold text-sm hover:bg-sky-400/20"
+              className="w-full sm:w-auto px-6 py-2.5 bg-sky-400/10 border border-sky-400 text-sky-400 rounded-full font-bold text-sm hover:bg-sky-400/20"
             >
               🛡️ Admin Terminal
             </button>
@@ -364,13 +331,12 @@ export default function App() {
         <header className={`sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex justify-between items-center border-b ${
           highContrast ? 'bg-black border-yellow-400/20' : 'bg-slate-900/95 backdrop-blur border-white/10'
         }`}>
-          {/* Logo with Medical Cross */}
+          {/* Logo */}
           <div 
             onClick={() => navigateTo('/')}
-            className="font-bold text-lg sm:text-xl cursor-pointer flex items-center gap-2.5 select-none"
+            className="font-bold text-lg sm:text-xl cursor-pointer flex items-center gap-2 select-none"
           >
-            <MedicalLogo size="small" />
-            <span className="tracking-tight text-white font-extrabold">ElderCare</span>
+            <span>❤️</span> ElderCare
           </div>
 
           {/* Desktop Navigation Links */}
